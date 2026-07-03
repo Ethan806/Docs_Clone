@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Docs Online - Register & Sign In</title><script src="/js/main.js" defer></script>
+    <style>
+        /* ----- RESET & BASE ----- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* ----- MAIN CONTAINER ----- */
+        .container {
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            flex-wrap: wrap;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        /* ----- LEFT BRAND SECTION ----- */
+        .brand-section {
+            background: linear-gradient(145deg, #1e3a5f, #0a1a2e);
+            color: #fff;
+            flex: 1 1 40%;
+            padding: 50px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .brand-section .logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 16px;
+        }
+        .brand-section .logo span {
+            color: #60a5fa;
+        }
+
+        .brand-section .tagline {
+            font-size: 1.2rem;
+            font-weight: 300;
+            opacity: 0.9;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .brand-section ul {
+            list-style: none;
+            margin-top: 10px;
+        }
+        .brand-section ul li {
+            padding: 10px 0;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .brand-section ul li:last-child {
+            border-bottom: none;
+        }
+        .brand-section ul li::before {
+            content: "✓";
+            color: #60a5fa;
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+
+        /* ----- RIGHT FORM SECTION ----- */
+        .form-section {
+            flex: 1 1 60%;
+            padding: 50px 45px;
+            background: #f8fafc;
+        }
+
+        .form-tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 12px;
+        }
+
+        .form-tabs button {
+            background: transparent;
+            border: none;
+            padding: 10px 24px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #64748b;
+            cursor: pointer;
+            border-radius: 40px;
+            transition: all 0.25s ease;
+        }
+        .form-tabs button:hover {
+            background: #e2e8f0;
+        }
+        .form-tabs button.active {
+            background: #1e3a5f;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(30, 58, 95, 0.3);
+        }
+
+        /* ----- FORM STYLES ----- */
+        .form-panel {
+            display: none;
+            animation: fadeUp 0.35s ease;
+        }
+        .form-panel.active {
+            display: block;
+        }
+
+        @keyframes fadeUp {
+            0% {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #1e293b;
+            margin-bottom: 6px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            background: #fff;
+            transition: border 0.2s ease, box-shadow 0.2s ease;
+            outline: none;
+        }
+        .form-group input:focus {
+            border-color: #1e3a5f;
+            box-shadow: 0 0 0 4px rgba(30, 58, 95, 0.12);
+        }
+        .form-group input::placeholder {
+            color: #94a3b8;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 18px;
+        }
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #1e3a5f, #2a4a7a);
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.2s ease;
+            margin-top: 8px;
+            letter-spacing: 0.3px;
+        }
+        .btn-primary:hover {
+            transform: scale(1.01);
+            box-shadow: 0 8px 24px rgba(30, 58, 95, 0.3);
+        }
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 22px;
+            font-size: 0.95rem;
+            color: #475569;
+        }
+        .form-footer a {
+            color: #1e3a5f;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .success-msg {
+            display: none;
+            background: #dcfce7;
+            color: #166534;
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            font-weight: 500;
+            border-left: 5px solid #22c55e;
+        }
+        .success-msg.show {
+            display: block;
+        }
+
+        .error-msg {
+            color: #dc2626;
+            font-size: 0.85rem;
+            margin-top: 6px;
+            display: none;
+        }
+        .error-msg.show {
+            display: block;
+        }
+
+        /* ----- RESPONSIVE ----- */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                border-radius: 18px;
+            }
+            .brand-section {
+                padding: 30px 24px;
+                text-align: center;
+            }
+            .brand-section ul li {
+                justify-content: center;
+            }
+            .form-section {
+                padding: 30px 20px;
+            }
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            .form-tabs {
+                justify-content: center;
+            }
+            .form-tabs button {
+                font-size: 0.95rem;
+                padding: 8px 18px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .brand-section .logo {
+                font-size: 1.9rem;
+            }
+            .form-tabs button {
+                font-size: 0.85rem;
+                padding: 6px 14px;
+            }
+            .btn-primary {
+                font-size: 1rem;
+                padding: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <!-- ===== LEFT: BRANDING ===== -->
+        <div class="brand-section">
+            <div class="logo">📄 Docs<span>Online</span></div>
+            <p class="tagline">
+                Secure, collaborative document management<br />
+                for teams and individuals.
+            </p>
+            <ul>
+                <li>Real-time collaboration</li>
+                <li>End-to-end encryption</li>
+                <li>Access from any device</li>
+                <li>Version history & restore</li>
+            </ul>
+        </div>
+
+        <!-- ===== RIGHT: FORMS ===== -->
+        <div class="form-section">
+
+            <!-- Success / error placeholder -->
+            <div id="globalSuccess" class="success-msg">✅ Action completed successfully!</div>
+
+            <!-- Tab Buttons -->
+            <div class="form-tabs">
+                <button id="tabSignIn" class="active">🔐 Sign In</button>
+                <button id="tabSignUp">📝 Register</button>
+            </div>
+
+            <!-- ======== SIGN IN FORM ======== -->
+            <div id="panelSignIn" class="form-panel active">
+                <h2 style="font-size: 1.6rem; color: #0f172a; margin-bottom: 6px;">Welcome Back</h2>
+                <p style="color: #64748b; margin-bottom: 24px;">Sign in to access your documents.</p>
+
+                <form id="signinForm" onsubmit="handleSignIn(event)">
+                    <div class="form-group">
+                        <label for="signinEmail">Email Address</label>
+                        <input type="email" id="signinEmail" placeholder="you@example.com" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="signinPassword">Password</label>
+                        <input type="password" id="signinPassword" placeholder="••••••••" required minlength="6" />
+                    </div>
+                    <button type="submit" class="btn-primary">Sign In</button>
+                </form>
+
+                <div class="form-footer">
+                    Don't have an account? <a id="switchToSignUp">Register here</a>
+                </div>
+            </div>
+
+            <!-- ======== SIGN UP / REGISTER FORM ======== -->
+            <div id="panelSignUp" class="form-panel">
+                <h2 style="font-size: 1.6rem; color: #0f172a; margin-bottom: 6px;">Create Account</h2>
+                <p style="color: #64748b; margin-bottom: 24px;">Start managing your docs in minutes.</p>
+
+                <form id="signupForm" onsubmit="handleSignUp(event)">
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label for="signupEmail">Email Address</label>
+                        <input type="email" id="signupEmail" placeholder="you@example.com" required />
+                    </div>
+
+                    <!-- Password + Confirm row -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="signupPassword">Password</label>
+                            <input type="password" id="signupPassword" placeholder="Min 6 chars" required minlength="6" />
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm Password</label>
+                            <input type="password" id="confirmPassword" placeholder="Re-enter password" required minlength="6" />
+                            <div id="passMatchError" class="error-msg">❌ Passwords do not match.</div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-primary">📝 Register</button>
+                </form>
+
+                <div class="form-footer">
+                    Already have an account? <a id="switchToSignIn">Sign In</a>
+                </div>
+            </div>
+
+        </div>
+        <!-- /form-section -->
+    </div>
+    <!-- /container -->
+
+    <script>
+        // =========================================================
+        // 1. TAB SWITCHING
+        // =========================================================
+        const tabSignIn = document.getElementById('tabSignIn');
+        const tabSignUp = document.getElementById('tabSignUp');
+        const panelSignIn = document.getElementById('panelSignIn');
+        const panelSignUp = document.getElementById('panelSignUp');
+        const switchToSignUp = document.getElementById('switchToSignUp');
+        const switchToSignIn = document.getElementById('switchToSignIn');
+
+        function showPanel(panel) {
+            // Hide both
+            panelSignIn.classList.remove('active');
+            panelSignUp.classList.remove('active');
+            tabSignIn.classList.remove('active');
+            tabSignUp.classList.remove('active');
+
+            if (panel === 'signin') {
+                panelSignIn.classList.add('active');
+                tabSignIn.classList.add('active');
+            } else {
+                panelSignUp.classList.add('active');
+                tabSignUp.classList.add('active');
+            }
+            // Hide any old success/error messages
+            document.getElementById('globalSuccess').classList.remove('show');
+            document.getElementById('passMatchError').classList.remove('show');
+        }
+
+        tabSignIn.addEventListener('click', () => showPanel('signin'));
+        tabSignUp.addEventListener('click', () => showPanel('signup'));
+        switchToSignUp.addEventListener('click', (e) => { e.preventDefault();
+            showPanel('signup'); });
+        switchToSignIn.addEventListener('click', (e) => { e.preventDefault();
+            showPanel('signin'); });
+
+       
+       
+
+        // =========================================================
+        // 4. EXTRA: Real-time password match indicator (optional)
+        // =========================================================
+        document.getElementById('confirmPassword').addEventListener('input', function() {
+            const pwd = document.getElementById('signupPassword').value;
+            const confirm = this.value;
+            const errorEl = document.getElementById('passMatchError');
+            if (confirm.length > 0 && pwd !== confirm) {
+                errorEl.classList.add('show');
+            } else {
+                errorEl.classList.remove('show');
+            }
+        });
+
+        document.getElementById('signupPassword').addEventListener('input', function() {
+            const confirm = document.getElementById('confirmPassword').value;
+            const errorEl = document.getElementById('passMatchError');
+            if (confirm.length > 0 && this.value !== confirm) {
+                errorEl.classList.add('show');
+            } else {
+                errorEl.classList.remove('show');
+            }
+        });
+
+        // =========================================================
+        // 5. Optional: Enter key to submit forms
+        // =========================================================
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    const form = input.closest('form');
+                    if (form) form.dispatchEvent(new Event('submit'));
+                }
+            });
+        });
+
+        console.log('📄 Docs Online — Demo ready.');
+    </script>
+
+</body>
+</html>
