@@ -29,3 +29,14 @@ buildNumber.properties
 .mvn/
 frontend/node_modules/
 frontend/build/
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/node_modules/
+frontend/dist/
