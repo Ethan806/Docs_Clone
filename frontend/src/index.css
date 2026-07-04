@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+html {
+  background: #fff;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+button,
+input {
+  font: inherit;
+}
