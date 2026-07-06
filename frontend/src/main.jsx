@@ -1,10 +1,9 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import OpenFile from "./OpenFile.jsx";
-
+import App_1 from "./App_1.jsx";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <OpenFile />
+    <App_1 />
   </StrictMode>,
 );

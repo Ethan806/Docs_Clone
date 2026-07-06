@@ -1,44 +1,36 @@
 package com.example.demo;
 
+import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.Valid;
+import com.example.demo.security.JwtUtil;
+
 import lombok.AllArgsConstructor;
-
-import java.util.List;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.messaging.handler.annotation.Payload;
-
 
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "*")
 @AllArgsConstructor
 public class registerController {
-    private final AccountService as;
-    
-    @PostMapping("/register")
-    public Account register(@RequestBody Account ac){
-        return as.registerAccount(ac);
 
+    private final AccountService as;
+    private final JwtUtil jwtUtil;
+
+    @PostMapping("/register")
+    public Account register(@RequestBody Account ac) {
+        return as.registerAccount(ac);
     }
 
     @PostMapping("/login")
-    public boolean getLoginStatus(@RequestBody Account ac) {
-        return as.check_password(ac);
-    }
-    
-    
+    public AuthResponse login(@RequestBody Account ac) {
 
+        boolean valid = as.checkPassword(ac);
+
+        if (!valid) {
+            throw new RuntimeException("Invalid email or password");
+        }
+
+        String token = jwtUtil.generateToken(ac.getEmail());
+
+        return new AuthResponse(token);
+    }
 }

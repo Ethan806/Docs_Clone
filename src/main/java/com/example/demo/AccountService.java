@@ -1,35 +1,50 @@
 package com.example.demo;
 
-import java.util.List;
-import org.springframework.http.HttpStatus;
+import java.util.Optional;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import lombok.AllArgsConstructor;
+
 @Service
 @AllArgsConstructor
 public class AccountService {
+
     private final accountRepository ar;
+    private final PasswordEncoder passwordEncoder;
 
     public Account registerAccount(Account ac) {
+
         ac.setId(null);
+
+        // Encrypt password before saving
+        ac.setPassword(passwordEncoder.encode(ac.getPassword()));
+
         return ar.save(ac);
-
     }
 
-    public Boolean check_password(Account ac) {
-        List<Account> ac_1 = ar.findByEmailIgnoreCase(ac.getEmail());
-        if (ac_1.isEmpty()) {
-            return false; // Email not found
+    public boolean checkPassword(Account ac) {
+
+        Optional<Account> account = ar.findByEmailIgnoreCase(ac.getEmail());
+
+        if (account.isEmpty()) {
+            return false;
         }
-        Account ac_1_1 = ac_1.get(0);
-        if (ac_1_1.getPassword().equals(ac.getPassword())) {
-            return true;
-        }
-        return false;
+
+        return passwordEncoder.matches(
+                ac.getPassword(),
+                account.get().getPassword());
     }
 
-    public void change_password(Account ac) {
+    public Optional<Account> getAccountByEmail(String email) {
+        return ar.findByEmailIgnoreCase(email);
+    }
+
+    public void changePassword(Account ac) {
+
+        ac.setPassword(passwordEncoder.encode(ac.getPassword()));
+
         ar.save(ac);
     }
 
