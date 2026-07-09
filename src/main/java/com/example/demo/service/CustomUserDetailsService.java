@@ -24,7 +24,11 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
         Account account = repository
-                .findByEmailIgnoreCase(email)
+                .findAllByEmailIgnoreCase(email)
+                .stream()
+                .filter(candidate -> candidate.getPassword() != null
+                        && candidate.getPassword().startsWith("$2"))
+                .findFirst()
                 .orElseThrow(() ->
                 new UsernameNotFoundException("User not found"));
 

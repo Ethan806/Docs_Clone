@@ -1,6 +1,8 @@
 package com.example.demo;
 
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import com.example.demo.security.JwtUtil;
 
@@ -8,7 +10,6 @@ import lombok.AllArgsConstructor;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "*")
 @AllArgsConstructor
 public class registerController {
 
@@ -16,21 +17,27 @@ public class registerController {
     private final JwtUtil jwtUtil;
 
     @PostMapping("/register")
-    public Account register(@RequestBody Account ac) {
-        return as.registerAccount(ac);
+    public ResponseEntity<?> register(@RequestBody Account ac) {
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(as.registerAccount(ac));
+        } catch (IllegalStateException exception) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(exception.getMessage());
+        }
     }
 
     @PostMapping("/login")
-    public AuthResponse login(@RequestBody Account ac) {
+    public ResponseEntity<AuthResponse> login(@RequestBody Account ac) {
 
         boolean valid = as.checkPassword(ac);
 
         if (!valid) {
-            throw new RuntimeException("Invalid email or password");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
         String token = jwtUtil.generateToken(ac.getEmail());
 
-        return new AuthResponse(token);
+        return ResponseEntity.ok(new AuthResponse(token));
     }
 }

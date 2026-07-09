@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "./LoginModule.css"; // Import the specific CSS file
 
-function App_1() {
+function App_1({ onLogin }) {
   // State for form inputs
   const [signInEmail, setSignInEmail] = useState("");
   const [signInPassword, setSignInPassword] = useState("");
@@ -11,52 +11,80 @@ function App_1() {
   const [activeTab, setActiveTab] = useState("signin");
   const [successMessage, setSuccessMessage] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [signInError, setSignInError] = useState("");
+  const [registrationError, setRegistrationError] = useState("");
 
   // Register function
   async function registerUser(email, password) {
-    try {
-      const response = await fetch('http://localhost:8080/api/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Registration successful', data);
-        return data;
-      } else {
-        const error = await response.text();
-        console.error('❌ Registration failed:', error);
-        return null;
-      }
-    } catch (error) {
-      console.error('❌ Network error:', error);
-      return null;
+    const response = await fetch('http://localhost:8080/api/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email.trim(), password })
+    });
+
+    if (!response.ok) {
+      const serverMessage = await response.text();
+      throw new Error(
+        response.status === 409
+          ? "An account with this email already exists."
+          : serverMessage || "Registration could not be completed.",
+      );
     }
+
+    return response.json();
   }
 
   // Sign In Handler
   const handleSignIn = async (e) => {
     e.preventDefault();
-    
+    setSignInError("");
+
     if (!signInEmail || !signInPassword) {
-      alert('Please fill in both fields.');
+      setSignInError("Please fill in both fields.");
       return;
     }
 
-    setSuccessMessage(`✅ Welcome back, ${signInEmail}! (Demo sign-in successful.)`);
-    
-    // Reset form
-    setSignInEmail("");
-    setSignInPassword("");
-    
-    console.log('Sign In →', { email: signInEmail, password: signInPassword });
+    try {
+      const response = await fetch("http://localhost:8080/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: signInEmail.trim(),
+          password: signInPassword,
+        }),
+      });
+
+      if (!response.ok) {
+        setSignInError(
+          response.status === 401
+            ? "Invalid email or password."
+            : "The server could not complete the sign-in request. Please try again.",
+        );
+        return;
+      }
+
+      const data = await response.json();
+
+      if (!data.token) {
+        setSignInError("The server response did not include a login token.");
+        return;
+      }
+
+      localStorage.setItem("token", data.token);localStorage.setItem("email", signInEmail);
+      onLogin();
+
+    } catch (err) {
+      console.error(err);
+      setSignInError("Unable to connect to the server.");
+    }
   };
 
   // Sign Up Handler
   const handleSignUp = async (e) => {
     e.preventDefault();
+    setRegistrationError("");
 
     // Validate password match
     if (signUpPassword !== confirmPassword) {
@@ -72,14 +100,20 @@ function App_1() {
     }
 
     // Call register API
-    const result = await registerUser(signUpEmail, signUpPassword);
-    
-    if (result) {
+    try {
+      await registerUser(signUpEmail, signUpPassword);
       setSuccessMessage(`✅ Registration successful for ${signUpEmail}!`);
       // Reset form
       setSignUpEmail("");
       setSignUpPassword("");
       setConfirmPassword("");
+    } catch (error) {
+      console.error("Registration failed:", error);
+      setRegistrationError(
+        error instanceof Error
+          ? error.message
+          : "Registration could not be completed.",
+      );
     }
   };
 
@@ -88,6 +122,8 @@ function App_1() {
     setActiveTab(tab);
     setSuccessMessage("");
     setPasswordError("");
+    setSignInError("");
+    setRegistrationError("");
   };
 
   return (
@@ -95,7 +131,7 @@ function App_1() {
       <div className="login-main">
         {/* Brand Section */}
         <div className="brand-section">
-          <div className="logo">
+          <div className="login-logo">
             📄 Docs<span>Online</span>
           </div>
           <p className="tagline">
@@ -139,6 +175,12 @@ function App_1() {
               <h2 className="form-title">Welcome Back</h2>
               <p className="form-subtitle">Sign in to access your documents.</p>
 
+              {signInError && (
+                <div className="error-msg auth-error" role="alert">
+                  {signInError}
+                </div>
+              )}
+
               <form onSubmit={handleSignIn}>
                 <div className="form-group">
                   <label>Email Address</label>
@@ -180,6 +222,12 @@ function App_1() {
             <div className="form-panel">
               <h2 className="form-title">Create Account</h2>
               <p className="form-subtitle">Start managing your docs in minutes.</p>
+
+              {registrationError && (
+                <div className="error-msg auth-error" role="alert">
+                  {registrationError}
+                </div>
+              )}
 
               <form onSubmit={handleSignUp}>
                 <div className="form-group">

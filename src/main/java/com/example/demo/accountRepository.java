@@ -1,10 +1,10 @@
 package com.example.demo;
 
-import java.util.Optional;
+import java.util.List;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface accountRepository extends MongoRepository<Account, String> {
 
-    Optional<Account> findByEmailIgnoreCase(String email);
+    List<Account> findAllByEmailIgnoreCase(String email);
 
 }

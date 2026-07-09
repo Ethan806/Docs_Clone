@@ -1,5 +1,6 @@
 /* ----- RESET & BASE ----- */
-* {
+.login-container,
+.login-container * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -40,14 +41,14 @@
   justify-content: center;
 }
 
-.brand-section .logo {
+.brand-section .login-logo {
   font-size: 2.5rem;
   font-weight: 700;
   letter-spacing: -0.5px;
   margin-bottom: 16px;
 }
 
-.brand-section .logo span {
+.brand-section .login-logo span {
   color: #60a5fa;
 }
 
@@ -246,6 +247,14 @@
   display: block;
 }
 
+.auth-error {
+  padding: 12px 14px;
+  margin-bottom: 18px;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  background: #fef2f2;
+}
+
 /* ----- RESPONSIVE ----- */
 @media (max-width: 768px) {
   .login-main {
@@ -276,7 +285,7 @@
 }
 
 @media (max-width: 400px) {
-  .brand-section .logo {
+  .brand-section .login-logo {
     font-size: 1.9rem;
   }
   .form-tabs button {
